@@ -26,8 +26,10 @@
 <!--  Variables  -->
 
 <variables>
+  <variable name="bgWeaponDamage">0</variable>
+  <variable name="colorAlternator">0</variable> 
   <variable name="lightningOn">0</variable>  
-  <variable name="lightningOn">0</variable>  
+  <variable name="myWeaponDamage">0</variable>  
   <variable name="rallyOn">0</variable>
 </variables>
 
@@ -62,7 +64,21 @@
   </trigger>
   
   <!-- Timer Trigger -->
-  
+
+  <trigger
+    enabled="y"
+    keep_evaluating="y"
+    match=".* takes a calculated swing at .* head"
+    regexp="y"
+    send_to="12"
+    sequence="100"
+  >
+    <send>
+	  EnableTimer ("Disable_Timer", true)
+	  ResetTimer("Disable_Timer")
+	</send>
+  </trigger> 
+ 
   <trigger
     enabled="y"
     keep_evaluating="y"
@@ -122,6 +138,20 @@
   <trigger
     enabled="y"
     keep_evaluating="y"
+    match="You concentrate your will on projecting an aura of uneasiness around yourself\."
+    regexp="y"
+    send_to="12"
+    sequence="100"
+  >
+    <send>
+	  EnableTimer ("Aura_Timer", true)
+	  ResetTimer("Aura_Timer")
+	</send>
+  </trigger>
+
+  <trigger
+    enabled="y"
+    keep_evaluating="y"
     match="You say: Let's kick some butt\!"
     regexp="y"
     send_to="12"
@@ -134,7 +164,7 @@
 	</send>
   </trigger>
 
-  <!-- Warning Trigger -->
+  <!-- Warning Triggers -->
 
   <trigger
     enabled="y"
@@ -146,6 +176,19 @@
   >
     <send>
       SetVariable ("myWeaponDamage", 1)
+	</send>
+  </trigger>
+
+  <trigger
+    enabled="y"
+    keep_evaluating="y"
+    match="You notice the wear on Mokuren's Bodyguard's weapon\."
+    regexp="y"
+    send_to="12"
+    sequence="100"
+  >
+    <send>
+      SetVariable ("bgWeaponDamage", 1)
 	</send>
   </trigger>
   
@@ -161,12 +204,37 @@
       SetVariable ("myWeaponDamage", 0)
 	</send>
   </trigger>
+  
+  <trigger
+    enabled="y"
+    keep_evaluating="y"
+    match="Mokuren's Bodyguard repairs (his|her) .*$"
+    regexp="y"
+    send_to="12"
+    sequence="100"
+  >
+    <send>
+      SetVariable ("bgWeaponDamage", 0)
+	</send>
+  </trigger>
 
 </triggers>
 
 <!--  Aliases  -->
 
 <aliases>
+
+  <alias
+    enabled="y"
+    match="reset bg weapon"
+    regexp="y"
+    send_to="12"
+    sequence="100"
+    >
+	<send>
+      SetVariable ("bgWeaponDamage", 0)	
+	</send>
+  </alias>
 
   <alias
     enabled="y"
@@ -185,6 +253,32 @@
 <!-- timers -->
 
 <timers>
+
+  <timer
+    name="Aura_Timer" 
+    enabled="n"
+    minute="5"
+    second="0.00"
+    offset_second="0.00"
+    send_to="12"
+  >
+    <send>
+	  EnableTimer ("Aura_Timer", false)
+    </send>
+  </timer>
+
+  <timer
+    name="Disable_Timer" 
+    enabled="n"
+    minute="3"
+    second="0.00"
+    offset_second="0.00"
+    send_to="12"
+  >
+    <send>
+	  EnableTimer ("Disable_Timer", false)
+    </send>
+  </timer>
 
   <!-- drawing salve -->
   <timer
@@ -239,12 +333,15 @@
 	  local t = GetWorld ("Space_Targetter")  -- get "Space_Targetter" worlds\\\\SWmud
 	  
       DisplayTitle ()
-	  DrawingSalveTimer ()
-	  RallyTimer ()
+	  DisplayDelay ("Aura_Timer", 'aura of uneasiness')	  
+	  DisplayDelay ("Salve_Timer", 'drawing salve')
+	  DisplayDelay ("Disable_Timer", 'enemy\'s disable')	  
+	  DisplayDelay ("Rally_Timer", 'rally')
 	  
       t:Note("")	  
 	  
-	  myWeaponStaus ()
+	  myWeaponStatus ()
+	  bgWeaponStatus () 
     </send>
   </timer>
 
@@ -258,6 +355,8 @@
 
     function OnPluginInstall (s)
 
+      SetVariable("bgWeaponDamage", 0)
+      SetVariable("colorAlternator", 0)	
       SetVariable("lightningOn", 0)
       SetVariable("myWeaponDamage", 0)
 	  SetVariable("rallyOn", 0)
@@ -284,73 +383,12 @@
       t:ColourNote (
         "#35A5CE", "black", "                Timers:")
       t:ColourNote ("green", "black", "---------------------------------------")	
-      t:ColourNote (
-	    "gray", "black", "Colors for alternator ",
-        "#C0C0C0", "black", "Alt 1 ",
-        "cyan", "black", "Alt 2") 
+
+      SetVariable("colorAlternator", 0)	 
 
     end -- function DisplayTitle
 	
-	function DrawingSalveTimer ()
-
-      local t = GetWorld ("Space_Targetter")  -- get "Space_Targetter" worlds\\\\SWmud
-	  
-        local secRemain = GetTimerInfo ("Salve_Timer", 13)
-		local timerOn = GetTimerInfo ("Salve_Timer", 6)
-
-        if timerOn == true then
-          secRemain = math.floor(secRemain + 0.5)
-          local min = math.floor(secRemain / 60)
-          local sec = secRemain - (min * 60)
-
-          if sec < 10 then
-            sec = "0" .. sec
-          end
-
-          if min < 10 then
-            min = " " .. min
-          end
-
-          t:ColourNote(
-            "gray", "black", "drawing salve: ",
-            "cornflowerblue", "black", min,
-            "cornflowerblue", "black", ":",
-            "cornflowerblue", "black", sec)
-		end
-	  
-    end -- function RallyTimer
-	
-		function RallyTimer ()
-
-      local t = GetWorld ("Space_Targetter")  -- get "Space_Targetter" worlds\\\\SWmud
-	  
-        local secRemain = GetTimerInfo ("Rally_Timer", 13)
-		local timerOn = GetTimerInfo ("Rally_Timer", 6)
-
-        if timerOn == true then
-          secRemain = math.floor(secRemain + 0.5)
-          local min = math.floor(secRemain / 60)
-          local sec = secRemain - (min * 60)
-
-          if sec < 10 then
-            sec = "0" .. sec
-          end
-
-          if min < 10 then
-            min = " " .. min
-          end
-
-          t:ColourNote(
-            "gray", "black", "rally: ",
-            "cornflowerblue", "black", min,
-            "cornflowerblue", "black", ":",
-            "cornflowerblue", "black", sec)
-		end
-	  
-    end -- function RallyTimer
-	
-
-	function myWeaponStaus ()
+	function myWeaponStatus ()
 
       local t = GetWorld ("Space_Targetter")  -- get "Space_Targetter" worlds\\\\SWmud
       local myWeaponDamage = tonumber(GetVariable("myWeaponDamage"))
@@ -360,8 +398,60 @@
           "yellow", "black", "Your weapon is damaged                               <reset weapon>")
 	  end
 	  
-    end -- function myWeaponStaus
+    end -- function myWeaponStatus
+	
+	function bgWeaponStatus ()
+
+      local t = GetWorld ("Space_Targetter")  -- get "Space_Targetter" worlds\\\\SWmud
+      local bgWeaponDamage = tonumber(GetVariable("bgWeaponDamage"))
+
+      if bgWeaponDamage == 1 then
+        t:ColourNote(
+          "yellow", "black", "Your bodyguard's weapon is damaged                <reset bg weapon>")
+	  end
+	  
+    end -- function bgWeaponStatus
+
+    function DisplayDelay (timerName, delayName)
+	
+      local secRemain = GetTimerInfo (timerName, 13)
+      local timerOn = GetTimerInfo (timerName, 6)
+      local t = GetWorld ("Space_Targetter")  -- get "Space_Targetter" worlds\\\\SWmud
+      local colorAlternator = tonumber(GetVariable("colorAlternator"))
+
+      if timerOn == true then
+        secRemain = math.floor(secRemain + 0.5)
+        local min = math.floor(secRemain / 60)
+        local sec = secRemain - (min * 60)
+
+        if sec < 10 then
+          sec = "0" .. sec
+        end
+
+        if min < 10 then
+          min = " " .. min
+        end
 		
+        if colorAlternator == 0 then
+          t:ColourNote(
+            "gray", "black", delayName .. ": ",
+            "cornflowerblue", "black", min,
+            "cornflowerblue", "black", ":",
+            "cornflowerblue", "black", sec)
+		  SetVariable("colorAlternator", 1)  
+	    else
+          t:ColourNote(
+            "#C0C0C0", "black", delayName .. ": ",
+            "cyan", "black", min,
+            "cyan", "black", ":",
+            "cyan", "black", sec)
+		  SetVariable("colorAlternator", 0)  
+        end	
+		  
+	  end
+	
+	end -- DisplayDelay
+	
   ]]>
 
 </script>
