@@ -27,7 +27,8 @@
 
 <variables>
   <variable name="bgWeaponDamage">0</variable>
-  <variable name="colorAlternator">0</variable> 
+  <variable name="colorAlternator">0</variable>
+  <variable name="fasttalkOn">0</variable>    
   <variable name="lightningOn">0</variable>  
   <variable name="myWeaponDamage">0</variable>  
   <variable name="rallyOn">0</variable>
@@ -64,6 +65,35 @@
   </trigger>
   
   <!-- Timer Trigger -->
+
+  <trigger
+    enabled="y"
+    keep_evaluating="y"
+    match=".* looks completely puzzled and does not seem to be concentrating at the moment\."
+    regexp="y"
+    send_to="12"
+    sequence="100"
+  >
+    <send>
+	  EnableTimer ("Fasttalk_Timer", true)
+	  ResetTimer("Fasttalk_Timer")
+  	  SetVariable("fasttalkOn", 1)
+	</send>
+  </trigger> 
+
+  <trigger
+    enabled="y"
+    keep_evaluating="y"
+    match=".* staggers and falls to the ground\.\.\. dead\."
+    regexp="y"
+    send_to="12"
+    sequence="100"
+  >
+    <send>
+	  EnableTimer ("Fasttalk_Timer", false)
+  	  SetVariable("fasttalkOn", 0)
+	</send>
+  </trigger> 
 
   <trigger
     enabled="y"
@@ -134,7 +164,7 @@
 	  ResetTimer("Salve_Timer")
 	</send>
   </trigger>
-
+ 
   <trigger
     enabled="y"
     keep_evaluating="y"
@@ -295,6 +325,20 @@
   </timer>
 
   <timer
+    name="Fasttalk_Timer"
+    enabled="n"
+    minute="3"
+    second="0.00"
+    offset_second="0.00"
+    send_to="12"
+  >
+    <send>
+	  EnableTimer ("Fasttalk_Timer", false)
+	  SetVariable("fasttalkOn", 0)
+    </send>
+  </timer>
+
+  <timer
     name="Lightning_Timer"
     enabled="n"
     minute="0"
@@ -334,8 +378,9 @@
 	  
       DisplayTitle ()
 	  DisplayDelay ("Aura_Timer", 'aura of uneasiness')	  
+	  DisplayDelay ("Disable_Timer", 'enemy\'s disable')
 	  DisplayDelay ("Salve_Timer", 'drawing salve')
-	  DisplayDelay ("Disable_Timer", 'enemy\'s disable')	  
+	  DisplayDelay ("Fasttalk_Timer", 'fasttalk')
 	  DisplayDelay ("Rally_Timer", 'rally')
 	  
       t:Note("")	  
@@ -356,7 +401,8 @@
     function OnPluginInstall (s)
 
       SetVariable("bgWeaponDamage", 0)
-      SetVariable("colorAlternator", 0)	
+      SetVariable("colorAlternator", 0)
+      SetVariable("fasttalkOn", 0)	  
       SetVariable("lightningOn", 0)
       SetVariable("myWeaponDamage", 0)
 	  SetVariable("rallyOn", 0)
