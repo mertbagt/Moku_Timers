@@ -179,6 +179,34 @@
 	</send>
   </trigger>
 
+ <trigger
+    enabled="y"
+    keep_evaluating="y"
+    match="You jam medical supplies into your deepest wounds\, just like you learned back in basic\."
+    regexp="y"
+    send_to="12"
+    sequence="100"
+  >
+    <send>
+	  EnableTimer ("FieldDressing_Timer", true)
+	  ResetTimer("FieldDressing_Timer")
+	</send>
+  </trigger>
+
+ <trigger
+    enabled="y"
+    keep_evaluating="y"
+    match="You perform cureall surgery on yourself\."
+    regexp="y"
+    send_to="12"
+    sequence="100"
+  >
+    <send>
+	  EnableTimer ("Cureall_Timer", true)
+	  ResetTimer("Cureall_Timer")
+	</send>
+  </trigger>
+
   <trigger
     enabled="y"
     keep_evaluating="y"
@@ -191,6 +219,20 @@
 	  EnableTimer ("Rally_Timer", true)
 	  ResetTimer("Rally_Timer")
 	  SetVariable("rallyOn", 1)
+	</send>
+  </trigger>
+
+ <trigger
+    enabled="y"
+    keep_evaluating="y"
+    match="You settle down into a prone position\, slow your breathing, and carefully take aim at .*\."
+    regexp="y"
+    send_to="12"
+    sequence="100"
+  >
+    <send>
+	  EnableTimer ("Snipe_Timer", true)
+	  ResetTimer("Snipe_Timer")
 	</send>
   </trigger>
 
@@ -298,6 +340,19 @@
   </timer>
 
   <timer
+    name="Cureall_Timer" 
+    enabled="n"
+    minute="10"
+    second="0.00"
+    offset_second="0.00"
+    send_to="12"
+  >
+    <send>
+	  EnableTimer ("Cureall_Timer", false)
+    </send>
+  </timer>
+
+  <timer
     name="Disable_Timer" 
     enabled="n"
     minute="3"
@@ -339,6 +394,19 @@
   </timer>
 
   <timer
+    name="FieldDressing_Timer" 
+    enabled="n"
+    minute="5"
+    second="0.00"
+    offset_second="0.00"
+    send_to="12"
+  >
+    <send>
+	  EnableTimer ("FieldDressing_Timer", false)
+    </send>
+  </timer>
+
+  <timer
     name="Lightning_Timer"
     enabled="n"
     minute="0"
@@ -367,6 +435,19 @@
   </timer>
 
   <timer
+    name="Snipe_Timer" 
+    enabled="n"
+    minute="0"
+    second="30.00"
+    offset_second="0.00"
+    send_to="12"
+  >
+    <send>
+	  EnableTimer ("Snipe_Timer", false)
+    </send>
+  </timer>
+
+  <timer
     name="Timer_Display"
     enabled="y"
     second="1.00"
@@ -377,11 +458,14 @@
 	  local t = GetWorld ("Space_Targetter")  -- get "Space_Targetter" worlds\\\\SWmud
 	  
       DisplayTitle ()
-	  DisplayDelay ("Aura_Timer", 'aura of uneasiness')	  
+	  DisplayDelay ("Aura_Timer", 'aura of uneasiness')
+	  DisplayDelay ("Cureall_Timer", 'cureall surgery or nanoheal')
 	  DisplayDelay ("Disable_Timer", 'enemy\'s disable')
 	  DisplayDelay ("Salve_Timer", 'drawing salve')
 	  DisplayDelay ("Fasttalk_Timer", 'fasttalk')
+	  DisplayDelay ("FieldDressing_Timer", 'field dressing')	  
 	  DisplayDelay ("Rally_Timer", 'rally')
+	  DisplayDelay ("Snipe_Timer", 'sniping')	  
 	  
       t:Note("")	  
 	  
