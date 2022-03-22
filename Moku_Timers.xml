@@ -235,6 +235,20 @@
 	  ResetTimer("Snipe_Timer")
 	</send>
   </trigger>
+  
+   <trigger
+    enabled="y"
+    keep_evaluating="y"
+    match="Your wounds heal over as the drug runs through your body\."
+    regexp="y"
+    send_to="12"
+    sequence="100"
+  >
+    <send>
+	  EnableTimer ("Retro_Timer", true)
+	  ResetTimer("Retro_Timer")
+	</send>
+  </trigger>
 
   <!-- Warning Triggers -->
 
@@ -435,6 +449,19 @@
   </timer>
 
   <timer
+    name="Retro_Timer" 
+    enabled="n"
+    minute="10"
+    second="0.00"
+    offset_second="0.00"
+    send_to="12"
+  >
+    <send>
+	  EnableTimer ("Retro_Timer", false)
+    </send>
+  </timer>
+
+  <timer
     name="Snipe_Timer" 
     enabled="n"
     minute="0"
@@ -465,6 +492,7 @@
 	  DisplayDelay ("Fasttalk_Timer", 'fasttalk')
 	  DisplayDelay ("FieldDressing_Timer", 'field dressing')	  
 	  DisplayDelay ("Rally_Timer", 'rally')
+	  DisplayDelay ("Retro_Timer", 'retrovirus or silver poison')	  
 	  DisplayDelay ("Snipe_Timer", 'sniping')	  
 	  
       t:Note("")	  
