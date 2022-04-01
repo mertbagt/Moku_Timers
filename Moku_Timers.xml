@@ -207,6 +207,20 @@
 	</send>
   </trigger>
 
+   <trigger
+    enabled="y"
+    keep_evaluating="y"
+    match="Your quick reflexes gain you a momentary advantage over .*\!"
+    regexp="y"
+    send_to="12"
+    sequence="100"
+  >
+    <send>
+	  EnableTimer ("Fastdraw_Timer", true)
+	  ResetTimer("Fastdraw_Timer")
+	</send>
+  </trigger>
+
   <trigger
     enabled="y"
     keep_evaluating="y"
@@ -394,6 +408,19 @@
   </timer>
 
   <timer
+    name="Fastdraw_Timer" 
+    enabled="n"
+    minute="0"
+    second="30.00"
+    offset_second="0.00"
+    send_to="12"
+  >
+    <send>
+	  EnableTimer ("Fastdraw_Timer", false)
+    </send>
+  </timer>
+
+  <timer
     name="Fasttalk_Timer"
     enabled="n"
     minute="3"
@@ -449,6 +476,19 @@
   </timer>
 
   <timer
+    name="Rapid_Timer" 
+    enabled="n"
+    minute="1"
+    second="0"
+    offset_second="0.00"
+    send_to="12"
+  >
+    <send>
+	  EnableTimer ("Rapid_Timer", false)
+    </send>
+  </timer>
+
+  <timer
     name="Retro_Timer" 
     enabled="n"
     minute="10"
@@ -490,6 +530,7 @@
 	  DisplayDelay ("Disable_Timer", 'enemy\'s disable')
 	  DisplayDelay ("Salve_Timer", 'drawing salve')
 	  DisplayDelay ("Fasttalk_Timer", 'fasttalk')
+	  DisplayDelay ("Fastdraw_Timer", 'fastdraw')
 	  DisplayDelay ("FieldDressing_Timer", 'field dressing')	  
 	  DisplayDelay ("Rally_Timer", 'rally')
 	  DisplayDelay ("Retro_Timer", 'retrovirus or silver poison')	  
