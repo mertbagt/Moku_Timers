@@ -81,6 +81,20 @@
 	</send>
   </trigger> 
 
+   <trigger
+    enabled="y"
+    keep_evaluating="y"
+    match="You carefully override all"
+    regexp="y"
+    send_to="12"
+    sequence="100"
+  >
+    <send>
+	  EnableTimer ("Rapid_Timer", true)
+	  ResetTimer("Rapid_Timer")
+	</send>
+  </trigger>
+
   <trigger
     enabled="y"
     keep_evaluating="y"
@@ -527,12 +541,13 @@
       DisplayTitle ()
 	  DisplayDelay ("Aura_Timer", 'aura of uneasiness')
 	  DisplayDelay ("Cureall_Timer", 'cureall surgery or nanoheal')
-	  DisplayDelay ("Disable_Timer", 'enemy\'s disable')
 	  DisplayDelay ("Salve_Timer", 'drawing salve')
+	  DisplayDelay ("Disable_Timer", 'enemy\'s disable')	  
 	  DisplayDelay ("Fasttalk_Timer", 'fasttalk')
 	  DisplayDelay ("Fastdraw_Timer", 'fastdraw')
 	  DisplayDelay ("FieldDressing_Timer", 'field dressing')	  
 	  DisplayDelay ("Rally_Timer", 'rally')
+	  DisplayDelay ("Rapid_Timer", 'rapid fire')	  
 	  DisplayDelay ("Retro_Timer", 'retrovirus or silver poison')	  
 	  DisplayDelay ("Snipe_Timer", 'sniping')	  
 	  
