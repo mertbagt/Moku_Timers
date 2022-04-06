@@ -32,6 +32,7 @@
   <variable name="lightningOn">0</variable>  
   <variable name="myWeaponDamage">0</variable>  
   <variable name="rallyOn">0</variable>
+  <variable name="snipeOn">0</variable>  
 </variables>
 
 <!--  Triggers  -->
@@ -261,6 +262,7 @@
     <send>
 	  EnableTimer ("Snipe_Timer", true)
 	  ResetTimer("Snipe_Timer")
+  	  SetVariable("snipeOn", 1)	  
 	</send>
   </trigger>
   
@@ -525,6 +527,7 @@
   >
     <send>
 	  EnableTimer ("Snipe_Timer", false)
+	  SetVariable("snipeOn", 0)	  
     </send>
   </timer>
 
