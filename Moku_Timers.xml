@@ -225,6 +225,20 @@
    <trigger
     enabled="y"
     keep_evaluating="y"
+    match="You push yourself beyond your normal limits in order to move a little faster\!"
+    regexp="y"
+    send_to="12"
+    sequence="100"
+  >
+    <send>
+	  EnableTimer ("Haste_Timer", true)
+	  ResetTimer("Haste_Timer")
+	</send>
+  </trigger>
+
+   <trigger
+    enabled="y"
+    keep_evaluating="y"
     match="Your quick reflexes gain you a momentary advantage over .*\!"
     regexp="y"
     send_to="12"
@@ -464,6 +478,19 @@
   </timer>
 
   <timer
+    name="Haste_Timer" 
+    enabled="n"
+    minute="3"
+    second="0"
+    offset_second="0.00"
+    send_to="12"
+  >
+    <send>
+	  EnableTimer ("Haste_Timer", false)
+    </send>
+  </timer>
+  
+  <timer
     name="Lightning_Timer"
     enabled="n"
     minute="0"
@@ -548,7 +575,8 @@
 	  DisplayDelay ("Disable_Timer", 'enemy\'s disable')	  
 	  DisplayDelay ("Fasttalk_Timer", 'fasttalk')
 	  DisplayDelay ("Fastdraw_Timer", 'fastdraw')
-	  DisplayDelay ("FieldDressing_Timer", 'field dressing')	  
+	  DisplayDelay ("FieldDressing_Timer", 'field dressing')
+	  DisplayDelay ("Haste_Timer", 'haste')	  
 	  DisplayDelay ("Rally_Timer", 'rally')
 	  DisplayDelay ("Rapid_Timer", 'rapid fire')	  
 	  DisplayDelay ("Retro_Timer", 'retrovirus or silver poison')	  
